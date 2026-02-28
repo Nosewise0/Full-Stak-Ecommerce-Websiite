@@ -1,0 +1,28 @@
+<% layout('layout/boilerplate') %>
+
+    <div class="auth-container">
+        <div class="card auth-card shadow-lg">
+            <div class="auth-header">
+                <h2 class="fw-bold mb-0">Welcome Back</h2>
+                <p class="opacity-75 mb-0">Please enter your details</p>
+            </div>
+            <div class="auth-body">
+                <form action="/auth/login" method="POST" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Enter your username" required>
+                        <label for="username">Username</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                            required>
+                        <label for="password">Password</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 auth-btn">Login</button>
+                </form>
+                <div class="auth-footer">
+                    <p class="text-secondary small mb-0">Don't have an account? <a href="/auth/register">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>

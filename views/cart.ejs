@@ -1,0 +1,172 @@
+<% layout('layout/boilerplate') %>
+
+    <div class="cart-wrapper py-5">
+
+        <% if (!cart || !cart.items || cart.items.length===0) { %>
+            <!-- Empty Cart -->
+            <div class="text-center py-5">
+                <i class="fa-solid fa-cart-shopping fa-4x text-muted mb-4"></i>
+                <h3 class="fw-bold mb-2">Your cart is empty</h3>
+                <p class="text-muted mb-4">Looks like you haven't added anything yet.</p>
+                <a href="/products" class="btn btn-primary rounded-pill px-4 py-2">
+                    <i class="fa-solid fa-bag-shopping me-2"></i> Browse Products
+                </a>
+            </div>
+
+            <% } else { %>
+                <div class="row g-4">
+
+                    <!-- Cart Items Section -->
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                            <div class="card-header bg-white py-3 border-bottom border-light">
+                                <h5 class="mb-0 fw-bold">
+                                    Your Cart (<%= cart.items.length %>
+                                        <%= cart.items.length===1 ? 'item' : 'items' %>)
+                                </h5>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <% cart.items.forEach(item=> { %>
+                                    <div class="cart-item p-4 border-bottom border-light">
+                                        <div class="row align-items-center">
+
+                                            <!-- Product Image -->
+                                            <div class="col-3 col-md-2">
+                                                <div class="cart-item-img-wrapper rounded-3">
+                                                    <img src="<%= item.product.image %>" alt="<%= item.product.title %>"
+                                                        class="img-fluid rounded-3">
+                                                </div>
+                                            </div>
+
+                                            <!-- Product Info -->
+                                            <div class="col-9 col-md-5">
+                                                <h6 class="fw-bold mb-1">
+                                                    <%= item.product.title %>
+                                                </h6>
+                                                <p class="text-muted small mb-0">
+                                                    <%= item.product.category %>
+                                                </p>
+                                                <div class="mt-2 d-md-none">
+                                                    <span class="fw-bold text-primary">$<%= (item.product.price *
+                                                            item.quantity).toFixed(2) %></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Quantity Updater -->
+                                            <div class="col-6 col-md-3 mt-3 mt-md-0">
+                                                <form action="/cart/update/<%= item.product._id %>" method="POST"
+                                                    class="d-flex align-items-center quantity-form">
+                                                    <div
+                                                        class="input-group input-group-sm quantity-selector rounded-pill overflow-hidden border">
+                                                        <button class="btn btn-light border-0 px-3 qty-minus"
+                                                            type="button">-</button>
+                                                        <input type="text" name="quantity"
+                                                            class="form-control text-center border-0 bg-white qty-value"
+                                                            value="<%= item.quantity %>" readonly
+                                                            style="max-width:50px;">
+                                                        <button class="btn btn-light border-0 px-3 qty-plus"
+                                                            type="button">+</button>
+                                                    </div>
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-outline-secondary ms-2 rounded-pill"
+                                                        title="Update">
+                                                        <i class="fa-solid fa-rotate-right"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Price + Remove -->
+                                            <div class="col-6 col-md-2 mt-3 mt-md-0 text-end">
+                                                <div class="d-none d-md-block">
+                                                    <span class="fw-bold text-primary">$<%= (item.product.price *
+                                                            item.quantity).toFixed(2) %></span>
+                                                </div>
+                                                <form action="/cart/remove/<%= item.product._id %>" method="POST"
+                                                    class="d-inline">
+                                                    <button type="submit" class="btn btn-link text-danger p-0 mt-md-2"
+                                                        title="Remove">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                            </div>
+
+                            <div class="card-footer bg-white py-3">
+                                <a href="/products" class="btn btn-link text-decoration-none text-dark ps-0">
+                                    <i class="fa-solid fa-arrow-left me-2"></i> Continue Shopping
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="card-header bg-white py-3 border-bottom border-light">
+                                <h5 class="mb-0 fw-bold">Order Summary</h5>
+                            </div>
+                            <div class="card-body py-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Subtotal</span>
+                                    <span class="fw-bold">$<%= cart.totalPrice.toFixed(2) %></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Shipping</span>
+                                    <span class="text-success fw-bold">Free</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <span class="text-muted">Estimated Tax</span>
+                                    <span class="fw-bold">$0.00</span>
+                                </div>
+                                <hr class="my-4 opacity-50">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <span class="h5 mb-0 fw-bold">Total</span>
+                                    <span class="h5 mb-0 fw-bold text-primary">$<%= cart.totalPrice.toFixed(2) %></span>
+                                </div>
+
+                                <a href="/checkout"
+                                    class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm checkout-btn">
+                                    Proceed to Checkout <i class="fa-solid fa-arrow-right ms-2"></i>
+                                </a>
+                                <div class="mt-4 text-center">
+                                    <p class="small text-muted">
+                                        <i class="fa-solid fa-shield-halved me-1"></i> Secure Checkout Guaranteed
+                                    </p>
+                                    <div
+                                        class="payment-icons d-flex justify-content-center gap-3 mt-2 text-muted opacity-50">
+                                        <i class="fa-brands fa-cc-visa fa-xl"></i>
+                                        <i class="fa-brands fa-cc-mastercard fa-xl"></i>
+                                        <i class="fa-brands fa-cc-paypal fa-xl"></i>
+                                        <i class="fa-brands fa-cc-apple-pay fa-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <% } %>
+    </div>
+
+    <script>
+        // +/- quantity buttons update the hidden input before form submit
+        document.querySelectorAll('.quantity-form').forEach(form => {
+            const minus = form.querySelector('.qty-minus');
+            const plus = form.querySelector('.qty-plus');
+            const input = form.querySelector('.qty-value');
+
+            minus.addEventListener('click', () => {
+                const val = parseInt(input.value);
+                if (val > 1) input.value = val - 1;
+            });
+
+            plus.addEventListener('click', () => {
+                input.value = parseInt(input.value) + 1;
+            });
+        });
+    </script>

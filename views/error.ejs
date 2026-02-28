@@ -1,0 +1,16 @@
+<% layout('layout/boilerplate') %>
+
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">
+          <%= typeof error === 'string' ? error : error.message %>
+        </h4>
+        <% if (typeof error === 'object' && error.stack) { %>
+          <p>
+            <small><%= error.stack %></small>
+          </p>
+        <% } %>
+      </div>
+    </div>
+  </div>

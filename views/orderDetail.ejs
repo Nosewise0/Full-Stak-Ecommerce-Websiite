@@ -1,0 +1,130 @@
+<% layout('layout/boilerplate') %>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Order Details</h2>
+                        <p class="text-muted mb-0">Order #<%= order._id.toString().slice(-8).toUpperCase() %> &bull; <%=
+                                    order.createdAt.toLocaleDateString('en-US', { month: 'long' , day: 'numeric' ,
+                                    year: 'numeric' }) %>
+                        </p>
+                    </div>
+                    <div>
+                        <span class="badge rounded-pill 
+                        <%= order.status === 'Delivered' ? 'bg-success-subtle text-success' : 
+                           order.status === 'Cancelled' ? 'bg-danger-subtle text-danger' : 
+                           'bg-warning-subtle text-warning' %> px-3 py-2 fs-6">
+                            <i
+                                class="fa-solid <%= order.status === 'Delivered' ? 'fa-circle-check' : 'fa-clock' %> me-1"></i>
+                            <%= order.status %>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Items list -->
+                    <div class="col-md-8">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                            <div class="card-header bg-white p-4 border-bottom border-light">
+                                <h5 class="mb-0 fw-bold">Items</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <% for (let item of order.items) { %>
+                                        <div class="list-group-item p-4 border-light">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 bg-light rounded-3 p-1"
+                                                    style="width: 80px; height: 80px;">
+                                                    <img src="<%= item.product ? item.product.image : '/images/placeholder.jpg' %>"
+                                                        class="img-fluid rounded-2 w-100 h-100 object-fit-contain"
+                                                        alt="<%= item.product ? item.product.title : 'Product' %>">
+                                                </div>
+                                                <div class="flex-grow-1 ms-4">
+                                                    <h6 class="fw-bold mb-1">
+                                                        <%= item.product ? item.product.title : 'Product' %>
+                                                    </h6>
+                                                    <p class="small text-muted mb-0">Quantity: <%= item.quantity %>
+                                                            &bull; Unit Price: $<%= item.price.toFixed(2) %>
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="fw-bold text-primary">$<%= (item.price *
+                                                            item.quantity).toFixed(2) %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light p-4 border-0">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Subtotal</span>
+                                    <span class="fw-bold">$<%= order.totalAmount.toFixed(2) %></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Shipping</span>
+                                    <span class="text-success fw-bold">Free</span>
+                                </div>
+                                <hr class="my-3 opacity-10">
+                                <div class="d-flex justify-content-between">
+                                    <span class="h5 mb-0 fw-bold">Total</span>
+                                    <span class="h5 mb-0 fw-bold text-primary">$<%= order.totalAmount.toFixed(2) %>
+                                            </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar info -->
+                    <div class="col-md-4">
+                        <!-- Shipping Address -->
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-body p-4">
+                                <h6 class="text-uppercase small fw-bold text-muted mb-3">Shipping Address</h6>
+                                <p class="fw-bold mb-1">
+                                    <%= order.shippingAddress.firstName %>
+                                        <%= order.shippingAddress.lastName %>
+                                </p>
+                                <p class="text-muted small mb-1">
+                                    <%= order.shippingAddress.address %>
+                                </p>
+                                <p class="text-muted small mb-1">
+                                    <%= order.shippingAddress.city %>, <%= order.shippingAddress.postalCode %>
+                                </p>
+                                <p class="text-muted small mb-3">
+                                    <%= order.shippingAddress.country %>
+                                </p>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fa-solid fa-phone me-2"></i>
+                                    <%= order.shippingAddress.phone %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Info -->
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-body p-4">
+                                <h6 class="text-uppercase small fw-bold text-muted mb-3">Payment Method</h6>
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-money-bill-wave text-primary me-2"></i>
+                                    <span class="fw-semibold">
+                                        <%= order.paymentMethod %>
+                                    </span>
+                                </div>
+                                <p class="small text-muted mt-2 mb-0">Payment status: Paid via <%= order.paymentMethod
+                                        %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <a href="/orders" class="btn btn-outline-secondary w-100 rounded-pill py-2">
+                            <i class="fa-solid fa-chevron-left me-1"></i> Back to Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

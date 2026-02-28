@@ -1,0 +1,117 @@
+<% layout('layout/boilerplate') %>
+
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <aside class="col-lg-3 mb-4">
+            <form action="/products" method="GET" id="filterForm">
+                <div class="filter-sidebar">
+                    <h5 class="filter-title d-flex justify-content-between align-items-center">
+                        Filters
+                        <a href="/products" class="text-primary small fw-normal text-decoration-none"
+                            style="font-size: 0.75rem;">Clear All</a>
+                    </h5>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 small text-uppercase text-muted">Categories</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <% const categories=["electronics", "jewelery" , "men's clothing" , "women's clothing" ]; %>
+                                <% for (let cat of categories) { %>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="category"
+                                            value="<%= cat %>" id="cat-<%= cat %>" <%=(filters.category &&
+                                            (Array.isArray(filters.category) ? filters.category.includes(cat) :
+                                            filters.category===cat)) ? 'checked' : '' %>>
+                                        <label class="form-check-label small text-capitalize" for="cat-<%= cat %>">
+                                            <%= cat %>
+                                        </label>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 small text-uppercase text-muted">Max Price: $<span id="priceValue">
+                                <%= filters.price || 1000 %>
+                            </span></h6>
+                        <input type="range" class="form-range" min="0" max="1000" step="10" name="price" id="priceRange"
+                            value="<%= filters.price || 1000 %>"
+                            oninput="document.getElementById('priceValue').innerText = this.value">
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">$0</span>
+                            <span class="small text-muted">$1000</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 btn-sm rounded-pill py-2">Apply Filters</button>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Product Grid Section -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
+                <span class="text-secondary small">Showing <span class="fw-bold text-dark">
+                        <%= products.length %>
+                    </span> premium items</span>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm border-0 bg-light rounded-pill px-3"
+                        style="width: 150px;">
+                        <option selected>Sort by: Newest</option>
+                        <option value="1">Price: Low to High</option>
+                        <option value="2">Price: High to Low</option>
+                        <option value="3">Most Popular</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                <!-- Dynamic Product Rendering -->
+                <% for (let product of products) { %>
+                    <a href="/products/<%= product.id %>" class="text-decoration-none" style="color: inherit;">
+                        <div class="product-card">
+                            <div class="product-img-wrapper">
+                                <img src="<%= product.image %>" alt="<%= product.title %>"
+                                    class="w-100 h-100 object-fit-cover shadow-sm">
+                                <div class="product-badge">New Arrival</div>
+                            </div>
+                            <div class="product-info">
+                                <h5 class="fw-bold mb-1 text-truncate">
+                                    <%= product.title %>
+                                </h5>
+                                <p class="text-muted small mb-3 text-truncate">
+                                    <%= product.description %>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="product-price">$<%= product.price %></span>
+                                    <button class="btn btn-primary btn-sm rounded-circle shadow-sm"
+                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <nav class="mt-5 d-flex justify-content-center">
+                <ul class="pagination custom-pagination gap-2">
+                    <li class="page-item disabled">
+                        <a class="page-link rounded-circle border-0 bg-light text-muted" href="#"><i
+                                class="fa-solid fa-chevron-left"></i></a>
+                    </li>
+                    <li class="page-item active"><a class="page-link rounded-circle border-0 shadow-sm" href="#">1</a>
+                    </li>
+                    <li class="page-item"><a class="page-link rounded-circle border-0 bg-light text-dark" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link rounded-circle border-0 bg-light text-dark" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle border-0 bg-light text-dark" href="#"><i
+                                class="fa-solid fa-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
